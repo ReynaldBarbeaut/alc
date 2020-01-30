@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE definition PUBLIC "-//objectweb.org//DTD Fractal ADL 2.0//EN" "classpath://org/objectweb/fractal/adl/xml/basic.dtd">
+
+<definition name="comanche.Comanche">
+  	<interface name="r" signature="java.lang.Runnable" role="server"/>
+	
+	<component name="User">
+    	<interface name="pac" signature="java.lang.Runnable" role="server"/>
+    	<interface name="cn" signature="comanche.Num" role="client"/>
+    	<interface name="ci" signature="comanche.ImpCmd" role="client"/>
+    	<content class="comanche.User"/>
+		<controller desc="primitive"/>
+	</component> 
+
+	<component name="Environnement">
+		<interface name="cen" signature="comanche.Cartouche" role="server"/>
+		<interface name="cec" signature="comanche.Cartouche" role="server"/>
+		<interface name="mp" signature="comanche.Input" role="server"/>
+		<interface name="do" signature="comanche.Document" role="server"/>
+		<interface name="ae" signature="comanche.Alimentation" role="server"/>
+			
+		<component name="Cartouche">
+			<interface name="cen" signature="comanche.Cartouche" role="server"/>
+			<interface name="cec" signature="comanche.Cartouche" role="server"/>
+			<content class="comanche.BasicCartouche"/>
+			<controller desc="primitive"/>
+		</component>
+
+		<component name="Input">
+			<interface name="mp" signature="comanche.Input" role="server"/>
+			<content class="comanche.BasicInput"/>
+			<controller desc="primitive"/>
+		</component>
+
+		<component name="Document">
+			<interface name="do" signature="comanche.Document" role="server"/>
+			<content class="comanche.BasicDocument"/>
+			<controller desc="primitive"/>
+		</component>
+
+		<component name="Alimentation">
+			<interface name="ae" signature="comanche.Alimentation" role="server"/>
+			<content class="comanche.BasicAlimentation"/>
+			<controller desc="primitive"/>
+		</component>
+
+		<binding client="this.cen" server="Cartouche.cen"/>
+		<binding client="this.cec" server="Cartouche.cec"/>	
+		<binding client="this.mp" server="Input.mp"/>
+		<binding client="this.do" server="Document.do"/>
+		<binding client="this.ae" server="Alimentation.ae"/>
+		
+
+		<controller desc="composite"/>
+	</component>
+
+	<component name="Photocopieur">
+		<interface name="in" signature="comanche.Num" role="server"/>
+		<interface name="nc" signature="comanche.Num" role="server"/>
+		<interface name="ic" signature="comanche.ImpCmd" role="server"/>
+		<interface name="cen" signature="comanche.Cartouche" role="client"/>
+		<interface name="cec" signature="comanche.Cartouche" role="client"/>
+		<interface name="do" signature="comanche.Document" role="client"/>
+		<interface name="mp" signature="comanche.Input" role="client"/>
+		<interface name="ae" signature="comanche.Alimentation" role="client"/>
+
+		<component name="Imp">
+			<interface name="ic" signature="comanche.ImpCmd" role="server"/>
+			<interface name="cen" signature="comanche.Cartouche" role="client"/>
+			<interface name="cec" signature="comanche.Cartouche" role="client"/>
+			<interface name="mp" signature="comanche.Input" role="client"/>
+			<interface name="ae" signature="comanche.Alimentation" role="client"/>
+			<interface name="in" signature="comanche.Num" role="client"/>
+			<content class="comanche.Imp"/>
+			<controller desc="primitive"/>
+		</component>
+
+		<component name="Num">
+			<interface name="in" signature="comanche.Num" role="server"/>
+			<interface name="nc" signature="comanche.Num" role="server"/>
+			<interface name="do" signature="comanche.Document" role="client"/>
+			<interface name="ae" signature="comanche.Alimentation" role="client"/>
+			<content class="comanche.BasicNum"/>
+			<controller desc="primitive"/>
+		</component>
+
+		<binding client="this.in" server="Num.in"/>
+		<binding client="this.nc" server="Num.nc"/>	
+		<binding client="this.ic" server="Imp.ic"/>
+
+		<binding client="Imp.cec" server="this.cec"/>
+		<binding client="Imp.cen" server="this.cen"/>
+		<binding client="Imp.mp" server="this.mp"/>
+		<binding client="Imp.ae" server="this.ae"/>
+		<binding client="Imp.in" server="Num.in"/>
+
+		<binding client="Num.do" server="this.do"/>
+		<binding client="Num.ae" server="this.ae"/>
+
+		<controller desc="composite"/>
+	</component>
+
+		<binding client="User.cn" server="Photocopieur.nc"/>
+		<binding client="User.ci" server="Photocopieur.ic"/>	
+
+		<binding client="Photocopieur.cen" server="Environnement.cen"/>
+		<binding client="Photocopieur.cec" server="Environnement.cec"/>	
+		<binding client="Photocopieur.mp" server="Environnement.mp"/>
+		<binding client="Photocopieur.do" server="Environnement.do"/>	
+		<binding client="Photocopieur.ae" server="Environnement.ae"/>
+
+		<binding client="this.r" server="User.pac"/>
+	<controller desc="composite"/>
+</definition>
